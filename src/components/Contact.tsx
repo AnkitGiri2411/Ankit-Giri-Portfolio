@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,6 +9,7 @@ import {
   Check, 
   X
 } from "lucide-react";
+import { useForm, ValidationError } from "@formspree/react";
 
 export default function Contact() {
   const containerRef = useRef<HTMLElement>(null);
@@ -19,9 +20,11 @@ export default function Contact() {
   const footerEmailRef = useRef<HTMLDivElement>(null);
 
   const [copied, setCopied] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
+
+  // Formspree state hook
+  const [state, handleSubmitToFormspree, resetFormspree] = useForm("xpwdwykv");
 
   // Form fields state
   const [formState, setFormState] = useState({
@@ -30,6 +33,20 @@ export default function Contact() {
     subject: "",
     message: "",
   });
+
+  // Sync Formspree success state
+  useEffect(() => {
+    if (state.succeeded) {
+      setShowSuccess(true);
+      setShowFormModal(false);
+      setFormState({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    }
+  }, [state.succeeded]);
 
   const handleCopyEmail = async () => {
     try {
@@ -48,22 +65,9 @@ export default function Contact() {
     setFormState((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate API request delay
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setShowSuccess(true);
-      setShowFormModal(false);
-      setFormState({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
-    }, 1500);
+    await handleSubmitToFormspree(e);
   };
 
   useGSAP(
@@ -453,7 +457,7 @@ export default function Contact() {
                       onChange={handleInputChange}
                       placeholder=" "
                       required
-                      disabled={isSubmitting}
+                      disabled={state.submitting}
                       className="peer w-full pt-6 pb-2 px-4 bg-white/20 border border-[#161616] rounded-2xl text-palette-midnight focus:outline-none focus:border-[#F44A22] focus:bg-white/60 transition-all duration-300 text-base"
                     />
                     <label
@@ -466,6 +470,7 @@ export default function Contact() {
                       Your Name
                     </label>
                   </div>
+                  <ValidationError field="name" errors={state.errors} className="text-[#F44A22] text-xs -mt-3 font-semibold font-jakarta" />
 
                   {/* Email Input */}
                   <div className="relative w-full">
@@ -477,7 +482,7 @@ export default function Contact() {
                       onChange={handleInputChange}
                       placeholder=" "
                       required
-                      disabled={isSubmitting}
+                      disabled={state.submitting}
                       className="peer w-full pt-6 pb-2 px-4 bg-white/20 border border-[#161616] rounded-2xl text-palette-midnight focus:outline-none focus:border-[#F44A22] focus:bg-white/60 transition-all duration-300 text-base"
                     />
                     <label
@@ -490,6 +495,7 @@ export default function Contact() {
                       Your Email
                     </label>
                   </div>
+                  <ValidationError field="email" errors={state.errors} className="text-[#F44A22] text-xs -mt-3 font-semibold font-jakarta" />
 
                   {/* Subject Input */}
                   <div className="relative w-full">
@@ -501,7 +507,7 @@ export default function Contact() {
                       onChange={handleInputChange}
                       placeholder=" "
                       required
-                      disabled={isSubmitting}
+                      disabled={state.submitting}
                       className="peer w-full pt-6 pb-2 px-4 bg-white/20 border border-[#161616] rounded-2xl text-palette-midnight focus:outline-none focus:border-[#F44A22] focus:bg-white/60 transition-all duration-300 text-base"
                     />
                     <label
@@ -514,6 +520,7 @@ export default function Contact() {
                       Subject
                     </label>
                   </div>
+                  <ValidationError field="subject" errors={state.errors} className="text-[#F44A22] text-xs -mt-3 font-semibold font-jakarta" />
 
                   {/* Message Input */}
                   <div className="relative w-full">
@@ -525,7 +532,7 @@ export default function Contact() {
                       onChange={handleInputChange}
                       placeholder=" "
                       required
-                      disabled={isSubmitting}
+                      disabled={state.submitting}
                       className="peer w-full pt-6 pb-3 px-4 bg-white/20 border border-[#161616] rounded-2xl text-palette-midnight focus:outline-none focus:border-[#F44A22] focus:bg-white/60 transition-all duration-300 text-base resize-none"
                     />
                     <label
@@ -538,14 +545,15 @@ export default function Contact() {
                       Message
                     </label>
                   </div>
+                  <ValidationError field="message" errors={state.errors} className="text-[#F44A22] text-xs -mt-3 font-semibold font-jakarta" />
 
                   {/* Submit Form Button */}
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={state.submitting}
                     className="w-full py-4 bg-[#F44A22] text-[#FEF8E8] font-semibold border border-[#161616] rounded-2xl hover:bg-[#F44A22]/90 hover:scale-[1.01] active:scale-[0.99] disabled:bg-gray-400 disabled:scale-100 disabled:cursor-not-allowed transition-all duration-300 shadow-lg shadow-[#F44A22]/20 flex items-center justify-center gap-2 group cursor-pointer"
                   >
-                    {isSubmitting ? (
+                    {state.submitting ? (
                       <>
                         <svg
                           className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
@@ -645,7 +653,10 @@ export default function Contact() {
 
               {/* Close Button */}
               <button
-                onClick={() => setShowSuccess(false)}
+                onClick={() => {
+                  setShowSuccess(false);
+                  resetFormspree();
+                }}
                 className="px-8 py-3 bg-palette-midnight border border-[#161616] hover:bg-[#F44A22] hover:text-[#FEF8E8] text-white rounded-xl shadow-lg transition-colors duration-300 font-semibold cursor-pointer"
               >
                 Back to Site
