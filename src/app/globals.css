@@ -98,3 +98,22 @@ body {
     animation: float-slow-bottom 9s ease-in-out infinite;
   }
 }
+
+/* Custom Cursors */
+html, body, .cursor-default {
+  cursor: url('/cursor.svg') 3 3, auto;
+}
+
+a, 
+button, 
+[role="button"], 
+input[type="button"], 
+input[type="submit"], 
+input[type="image"], 
+label,
+select, 
+option,
+.cursor-pointer {
+  cursor: url('/cursor-pointer.svg') 3 3, pointer;
+}
+
