@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { usePageTransition } from "@/components/PageTransition";
+import { marqueeSkills, profile, stats } from "@/data/portfolio";
 
 export default function Hero() {
   const containerRef = useRef<HTMLElement>(null);
@@ -13,11 +14,11 @@ export default function Hero() {
   const { startTransition } = usePageTransition();
 
   const phrases = useMemo(() => [
-    "UI/UX DESIGNER",
-    "FULL-STACK DEVELOPER",
-    "CREATIVE CODER",
-    "INNOVATE SOLUTIONS",
-    "DESIGN EXPERIENCES"
+    "SENIOR JAVA ENGINEER",
+    "SPRING BOOT ARCHITECT",
+    "MICROSERVICES BUILDER",
+    "BACKEND & CLOUD",
+    "API ARCHITECT"
   ], []);
 
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
@@ -269,13 +270,17 @@ export default function Hero() {
               className="text-[#161616] hover:text-[#F44A22] text-3xl font-medium tracking-wide whitespace-nowrap transform -rotate-6 transition-all duration-300 hover:scale-105 cursor-default"
               style={{ fontFamily: "'RonthelBrush', cursive" }}
             >
-              Nand Kishore
+              Ankit Giri
             </div>
           </div>
           {/* Bio Text */}
           <p className="text-[#161616]/85 text-xs font-jakarta leading-relaxed font-medium mt-1">
-            Hi, I&apos;m Nand Kishore Soni. I bridge the gap between engineering and art to design immersive, high-performance web experiences.
+            {profile.bio}
           </p>
+          {/* Location */}
+          <span className="text-[#161616]/60 text-[10px] font-mono font-bold tracking-[0.2em] uppercase">
+            {profile.location}
+          </span>
           {/* Call to Action Button */}
           <button 
             onClick={() => startTransition("/contact")}
@@ -326,19 +331,17 @@ export default function Hero() {
         {/* Layer 3C: Left Column Metric Overlay (Desktop only) */}
         <div className="absolute bottom-24 left-8 z-30 hidden lg:flex flex-col items-start text-left pointer-events-auto">
           {/* Metrics Stack */}
-          <div className="flex flex-col gap-5 text-[#161616] font-jakarta w-48">
-            <div className="border-t border-[#161616]/10 pt-3">
-              <h3 className="text-3xl font-extrabold text-[#F44A22] font-oswald tracking-tight">3+</h3>
-              <p className="text-[#161616]/60 text-[10px] tracking-wider uppercase mt-0.5">Years Experience</p>
-            </div>
-            <div className="border-t border-[#161616]/10 pt-3">
-              <h3 className="text-3xl font-extrabold text-[#F44A22] font-oswald tracking-tight">30+</h3>
-              <p className="text-[#161616]/60 text-[10px] tracking-wider uppercase mt-0.5">Projects Done</p>
-            </div>
-            <div className="border-t border-[#161616]/10 pt-3">
-              <h3 className="text-3xl font-extrabold text-[#F44A22] font-oswald tracking-tight">100%</h3>
-              <p className="text-[#161616]/60 text-[10px] tracking-wider uppercase mt-0.5">Creative Drive</p>
-            </div>
+          <div className="flex flex-col gap-3 text-[#161616] font-jakarta w-48">
+            {stats.map((stat) => (
+              <div key={stat.label} className="border-t border-[#161616]/10 pt-2.5">
+                <h3 className="text-2xl xl:text-3xl font-extrabold text-[#F44A22] font-oswald tracking-tight">
+                  {stat.value}
+                </h3>
+                <p className="text-[#161616]/60 text-[10px] tracking-wider uppercase mt-0.5">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -346,7 +349,7 @@ export default function Hero() {
         {/* Mobile/Tablet Overlay Card (Frosted light glass layout) */}
         <div className="absolute bottom-20 left-6 right-6 z-30 flex flex-col items-center justify-center text-center lg:hidden bg-white/45 backdrop-blur-md p-5 rounded-2xl border border-white/30 pointer-events-auto max-w-md mx-auto">
           <p className="text-[#161616] text-xs font-jakarta leading-relaxed mb-4">
-            Hi, I&apos;m Nand Kishore Soni. I bridge the gap between engineering and art to design immersive, high-performance web experiences.
+            {profile.bio}
           </p>
           <div className="flex items-center gap-4 w-full justify-center">
             <button 
@@ -365,18 +368,14 @@ export default function Hero() {
       {/* 4. Bottom Horizontal Scrolling Marquee (Tilted Orange Banner with Cream Text) */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[110vw] max-w-[110%] bg-[#F44A22] py-3.5 border-t border-b border-[#161616]/20 overflow-hidden z-40 select-none rotate-[-2deg] origin-center shadow-lg">
         <div className="animate-marquee font-oswald text-[#FEF8E8] text-base md:text-lg font-extrabold uppercase tracking-widest flex items-center gap-12 whitespace-nowrap">
-          {Array.from({ length: 4 }).map((_, idx) => (
+          {Array.from({ length: 3 }).map((_, idx) => (
             <span key={idx} className="flex items-center gap-12">
-              <span>CREATIVE CODE</span>
-              <span className="text-[#FEF8E8]/55">✦</span>
-              <span>FULLSTACK DEVELOPER</span>
-              <span className="text-[#FEF8E8]/55">✦</span>
-              <span>WEB DESIGNER</span>
-              <span className="text-[#FEF8E8]/55">✦</span>
-              <span>ANIMATION SPECIALIST</span>
-              <span className="text-[#FEF8E8]/55">✦</span>
-              <span>UI/UX INNOVATION</span>
-              <span className="text-[#FEF8E8]/55">✦</span>
+              {marqueeSkills.map((skill) => (
+                <span key={`${idx}-${skill}`} className="flex items-center gap-12">
+                  <span>{skill}</span>
+                  <span className="text-[#FEF8E8]/55">✦</span>
+                </span>
+              ))}
             </span>
           ))}
         </div>

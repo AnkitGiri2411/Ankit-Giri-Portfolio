@@ -10,6 +10,7 @@ import {
   X
 } from "lucide-react";
 import { useForm, ValidationError } from "@formspree/react";
+import { profile } from "@/data/portfolio";
 
 export default function Contact() {
   const containerRef = useRef<HTMLElement>(null);
@@ -50,7 +51,7 @@ export default function Contact() {
 
   const handleCopyEmail = async () => {
     try {
-      await navigator.clipboard.writeText("nandkishorsoni098765@gmail.com");
+      await navigator.clipboard.writeText(profile.email);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -129,87 +130,61 @@ export default function Contact() {
       id: "badge-rock",
       type: "badge",
       badgeType: "rock",
-      initialX: "8%",
-      initialY: "18%",
+      initialX: "6%",
+      initialY: "12%",
       rotate: 8,
+    },
+    {
+      id: "email",
+      type: "capsule",
+      label: "EMAIL ↗",
+      href: `mailto:${profile.email}`,
+      initialX: "27%",
+      initialY: "8%",
+      rotate: -6,
     },
     {
       id: "whatsapp",
       type: "capsule",
       label: "WHATSAPP ↗",
-      href: "https://wa.me/7982402954?text=Hi%20Nandkishore!%20I%20just%20came%20across%20your%20amazing%20portfolio%20and%20would%20love%20to%20connect.",
-      initialX: "18%",
-      initialY: "32%",
+      href: `https://wa.me/${profile.whatsapp}?text=${encodeURIComponent(
+        "Hi Ankit! I came across your portfolio and would like to connect."
+      )}`,
+      initialX: "16%",
+      initialY: "46%",
       rotate: 5,
     },
     {
-      id: "twitter",
+      id: "call",
       type: "capsule",
-      label: "X (TWITTER) ↗",
-      href: "https://x.com/x_nandkishore",
-      initialX: "65%",
-      initialY: "18%",
+      label: "CALL ↗",
+      href: `tel:${profile.phoneHref}`,
+      initialX: "60%",
+      initialY: "8%",
       rotate: -8,
     },
     {
-      id: "telegram",
+      id: "location",
       type: "capsule",
-      label: "TELEGRAM ↗",
-      href: "https://t.me/@Tm_nandkishore",
-      initialX: "78%",
-      initialY: "55%",
-      rotate: 12,
-    },
-    {
-      id: "instagram",
-      type: "capsule",
-      label: "INSTAGRAM ↗",
-      href: "https://www.instagram.com/ig_nandkishore_soni",
-      initialX: "32%",
-      initialY: "12%",
-      rotate: -12,
+      label: `${profile.location} · REMOTE`,
+      initialX: "72%",
+      initialY: "44%",
+      rotate: 10,
     },
     {
       id: "badge-lips",
       type: "badge",
       badgeType: "lips",
-      initialX: "24%",
-      initialY: "48%",
+      initialX: "26%",
+      initialY: "66%",
       rotate: -8,
-    },
-    {
-      id: "linkedin",
-      type: "capsule",
-      label: "LINKEDIN ↗",
-      href: "https://www.linkedin.com/in/nand-kishore-soni-036783317/",
-      initialX: "8%",
-      initialY: "68%",
-      rotate: 15,
-    },
-    {
-      id: "google-skills",
-      type: "capsule",
-      label: "GOOGLE SKILLS ↗",
-      href: "https://www.skills.google/public_profiles/17fd8191-5307-48d9-b9cd-dcd29428e518",
-      initialX: "42%",
-      initialY: "38%",
-      rotate: -6,
-    },
-    {
-      id: "github",
-      type: "capsule",
-      label: "GITHUB ↗",
-      href: "https://github.com/legendxdevil",
-      initialX: "46%",
-      initialY: "64%",
-      rotate: -10,
     },
     {
       id: "badge-heart",
       type: "badge",
       badgeType: "heart",
-      initialX: "72%",
-      initialY: "35%",
+      initialX: "42%",
+      initialY: "26%",
       rotate: 14,
     },
     {
@@ -217,7 +192,7 @@ export default function Contact() {
       type: "capsule",
       label: "SEND MESSAGE ✦",
       isAction: true,
-      initialX: "62%",
+      initialX: "50%",
       initialY: "68%",
       rotate: 6,
       isPrimary: true,
@@ -255,13 +230,13 @@ export default function Contact() {
           className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-4 text-[10px] md:text-xs font-semibold font-jakarta tracking-wider text-[#161616]/70 uppercase"
         >
           <div className="text-center md:text-left">
-            I&apos;m here to help you turn your brief into something brilliant.
+            Senior Full Stack Java Engineer — backend, cloud and full-stack delivery.
           </div>
           <div className="text-center">
             Just drop me a line or interact with the stickers.
           </div>
           <div className="text-center md:text-right">
-            © 2026 Nand Kishore Soni. All rights reserved
+            © 2026 Ankit Giri. All rights reserved
           </div>
         </div>
       </div>
@@ -303,7 +278,14 @@ export default function Contact() {
                     if (sticker.isAction) {
                       setShowFormModal(true);
                     } else if (sticker.href) {
-                      window.open(sticker.href, "_blank", "noopener,noreferrer");
+                      if (
+                        sticker.href.startsWith("mailto:") ||
+                        sticker.href.startsWith("tel:")
+                      ) {
+                        window.location.href = sticker.href;
+                      } else {
+                        window.open(sticker.href, "_blank", "noopener,noreferrer");
+                      }
                     }
                   }}
                   className={`flex items-center gap-2 px-6 py-3.5 rounded-full border border-[#161616] font-jakarta font-bold text-sm md:text-base shadow-md transition-all duration-300 ${
@@ -422,7 +404,7 @@ export default function Contact() {
           onClick={handleCopyEmail}
           className="font-cormorant font-normal text-4xl sm:text-6xl md:text-7xl lg:text-[7.5rem] leading-none text-[#161616] hover:text-[#F44A22] active:scale-95 transition-all duration-500 text-center select-none cursor-pointer tracking-tighter w-full max-w-7xl break-all"
         >
-          nandkishorsoni098765@gmail.com
+          {profile.email}
         </h1>
 
         {/* Floating Tooltip Indicator */}
@@ -675,7 +657,7 @@ export default function Contact() {
                 Message Sent!
               </h4>
               <p className="text-[#161616]/80 font-light leading-relaxed mb-8">
-                Thank you for reaching out! Your message was sent successfully. Nand Kishore Soni will get back to you shortly.
+                Thank you for reaching out! Your message was sent successfully. Ankit Giri will get back to you shortly.
               </p>
 
               {/* Close Button */}
